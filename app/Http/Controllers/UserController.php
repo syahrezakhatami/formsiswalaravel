@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Siswa;
-use Illuminate\Http\Request;
 
-class SiswaController extends Controller
+use Illuminate\Http\Request;
+use App\Models\User;
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,8 +13,8 @@ class SiswaController extends Controller
      */
     public function index()
     {
-        $datasiswa = Siswa::all();
-        return view('index',['siswa'=>$datasiswa]);
+        $datausers = User::all();
+        return view('index', ['users' => $datausers]);
     }
 
     /**
@@ -24,7 +24,7 @@ class SiswaController extends Controller
      */
     public function create()
     {
-        //
+        return view('form_tambah');
     }
 
     /**
@@ -35,9 +35,13 @@ class SiswaController extends Controller
      */
     public function store(Request $request)
     {
-        //
-
-
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'login_role' => $request->login_role,
+        ]);
+        return redirect()->route('users.index');
     }
 
     /**
@@ -48,8 +52,8 @@ class SiswaController extends Controller
      */
     public function show($id)
     {
-        $siswa = Siswa::where('id', $id)->first();
-        return view('profil_siswa',['siswa'=> $siswa]);
+        $users = User::where('id', $id)->first();
+        return view('profil_siswa', ['users' => $users]);
     }
 
     /**
@@ -60,7 +64,8 @@ class SiswaController extends Controller
      */
     public function edit($id)
     {
-        //
+        $datausers = User::find($id);
+        return view('edit_siswa', ['users' => $datausers]);
     }
 
     /**
@@ -72,7 +77,15 @@ class SiswaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $users = User::find($id);
+        $users->name = $request->name;
+        $users->email = $request->email;
+        $users->password = $request->password;
+        $users->login_role = $request->login_role;
+        $users->save();
+
+        return redirect()->route('users.index');
+
     }
 
     /**
@@ -83,6 +96,10 @@ class SiswaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $users = User::find($id);
+        $users->delete();
+
+        return redirect()->route('users.index');
     }
+
 }
